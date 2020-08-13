@@ -1,5 +1,7 @@
-import { app, BrowserWindow, nativeTheme, Menu, Tray } from 'electron'
+import { app, BrowserWindow, nativeTheme, Menu, Tray, Notification } from 'electron'
 const path = require('path')
+const os = require('os-utils');
+
 
 try {
   if (process.platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
@@ -55,8 +57,9 @@ function createWindow () {
         app.quit()
     } }
   ]);
+
   tray = new Tray(path.resolve(__statics,'icons', 'favicon-128x128.png'))
-  tray.setToolTip('This is my application.')
+  tray.setToolTip('quasar-first-try')
   tray.setContextMenu(contextMenu)
 }
 

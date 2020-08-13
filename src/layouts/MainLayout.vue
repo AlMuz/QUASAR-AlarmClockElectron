@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh lpr lFf">
-    <q-header elevated>
+    <q-header elevated v-if="isElectron">
       <q-bar class="q-electron-drag">
         <q-icon name="laptop_chromebook" />
         <div>Testing</div>
@@ -15,11 +15,10 @@
 
     <q-page-container>
       <q-page class="q-pa-md">
-        <p v-for="n in 15" :key="n">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil
-          praesentium molestias a adipisci, dolore vitae odit, quidem
-          consequatur optio voluptates asperiores pariatur eos numquam rerum
-          delectus commodi perferendis voluptate?
+        <p v-for="(item, index) in information" :key="index">
+          {{item}}
+          <br>
+          <button @click="notificationTest(item)">Test</button>
         </p>
       </q-page>
     </q-page-container>
@@ -29,15 +28,31 @@
 <script>
 export default {
   name: "MainLayout",
+  data() {
+    return {
+      information: [
+        'odin',
+        'dva',
+        'tri',
+        'chetire',
+        'pjat'
+      ]
+    }
+  },
+  computed: {
+    isElectron() {
+      return process.env.MODE === "electron"
+    }
+  },
   methods: {
     minimize() {
-      if (process.env.MODE === "electron") {
+      if (this.isElectron) {
         console.log(this.$q.electron.remote.BrowserWindow.getFocusedWindow());
         this.$q.electron.remote.BrowserWindow.getFocusedWindow().hide();
       }
     },
     maximize() {
-      if (process.env.MODE === "electron") {
+      if (this.isElectron) {
         const win = this.$q.electron.remote.BrowserWindow.getFocusedWindow();
         if (win.isMaximized()) {
           win.unmaximize();
@@ -47,8 +62,23 @@ export default {
       }
     },
     closeApp() {
-      if (process.env.MODE === "electron") {
+      if (this.isElectron) {
         this.$q.electron.remote.BrowserWindow.getFocusedWindow().close();
+      }
+    },
+    notificationTest(item) {
+
+      if (this.isElectron) {
+        const notification = new this.$q.electron.remote.Notification({
+          title: 'Application',
+          body: item
+        })
+
+        notification.onclick = () => {
+          console.log('Notification clicked')
+        }
+
+        notification.show();
       }
     }
   }
