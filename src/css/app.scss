@@ -1,1 +1,5 @@
-// app global css in SCSS form
+.justify-content {
+  &-center {
+    justify-content: center;
+  }
+}
