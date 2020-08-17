@@ -16,7 +16,9 @@
 
     <div class="row" v-if="tab">
       <div class="col-6">
-        <span v-for="time in selectedTabData.whenItRing" :key="time">{{ time }}<br /></span>
+        <span v-for="(value, time) in selectedTabData.whenItRing" :key="time"
+          >{{ time }}<br
+        /></span>
       </div>
       <div class="col-6">
         <q-input
@@ -53,30 +55,30 @@ export default {
   data() {
     return {
       tab: null,
-      tabs: [],
+      tabs: []
     };
   },
   computed: {
     selectedTabData() {
-      return this.tabs[this.selectedTabKey]
+      return this.tabs[this.selectedTabKey];
     },
     selectedTabKey() {
-      return this.tab.slice(3)
+      return this.tab.slice(3);
     }
   },
   methods: {
     addNewTab() {
       this.tabs.push({
-          status: false,
-          workStart: null,
-          workTime: 8,
-          intervalTime: 20,
-          intervalId: null,
-          whenItRing: []
-        });
+        status: false,
+        workStart: null,
+        workTime: 8,
+        intervalTime: 20,
+        intervalId: null,
+        whenItRing: {}
+      });
     },
     startWork(key) {
-      const data = this.tabs[key]
+      const data = this.tabs[key];
       if (data.workStart === null) {
         return this.$q.notify("Empty workStart");
       }
@@ -88,23 +90,23 @@ export default {
       data.status = !data.status;
 
       if (data.status) {
-        let startingToWorkAt = data.workStart * 60;
-        data.whenItRing = [];
+        const date = new Date();
+        date.setHours(data.workStart, 0, 0, 0);
+        let startingToWorkAt = date.getTime();
+        let copyStartingToWorkAt = startingToWorkAt;
+        data.whenItRing = {};
 
         for (
           let i = 0;
-          startingToWorkAt <= (data.workStart + data.workTime) * 60;
+          startingToWorkAt <=
+          copyStartingToWorkAt + data.workTime * 60 * 60 * 1000;
           i++
         ) {
-          let hh = Math.floor(startingToWorkAt / 60);
-          let mm = startingToWorkAt % 60;
-          data.whenItRing[i] =
-            ("0" + hh).slice(-2) + ":" + ("0" + mm).slice(-2);
-          startingToWorkAt = startingToWorkAt + data.intervalTime;
+          data.whenItRing[startingToWorkAt] = Date.now() > startingToWorkAt;
+          startingToWorkAt = startingToWorkAt + data.intervalTime * 60 * 1000;
         }
 
-        // use date now
-        // timestamp increment
+        this.tabs[key].whenItRing = data.whenItRing;
 
         // this.intervalId = setInterval(() => {
         //   this.notificationTest(1);

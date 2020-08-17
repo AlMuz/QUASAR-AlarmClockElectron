@@ -1,7 +1,5 @@
 import { app, BrowserWindow, nativeTheme, Menu, Tray, Notification } from 'electron'
 const path = require('path')
-const os = require('os-utils');
-
 
 try {
   if (process.platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
