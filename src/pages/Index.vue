@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row justify-content-center">
-      <div class="text-purple q-gutter-md">
+      <div class="text-purple q-gutter-md cursor q-mb-md">
         <q-icon size="xl" name="alarm_add" @click="addNewTab" />
       </div>
     </div>
@@ -16,9 +16,10 @@
 
     <div class="row" v-if="tab">
       <div class="col-6">
-        <span v-for="(value, time) in selectedTabData.whenItRing" :key="time"
-          >{{ time }}<br
-        /></span>
+        <p v-for="(value, time) in selectedTabData.whenItRing" :key="time" class="no-margin">
+          {{ renderTime(time) }}
+          <q-icon size="sm" :name="value ? 'done' : 'close'" :class="value ? 'text-green' : 'text-black'" />
+        </p>
       </div>
       <div class="col-6">
         <q-input
@@ -115,6 +116,10 @@ export default {
         // clearInterval(this.intervalId);
         // this.intervalId = null;
       }
+    },
+    renderTime(time) {
+      const date = new Date(+time)
+      return `${date.getHours().toString().padStart(2, 0)}:${date.getMinutes().toString().padStart(2, 0)}:${date.getSeconds().toString().padStart(2, 0)}`
     }
   }
 };
