@@ -16,9 +16,13 @@
 
     <div class="row" v-if="tab">
       <div class="col-6">
-        <p v-for="(value, time) in selectedTabData.whenItRing" :key="time" class="no-margin">
+        <p v-for="(value, time) in this.selectedTabData.whenItRing" :key="time" class="no-margin">
           {{ renderTime(time) }}
-          <q-icon size="sm" :name="value ? 'done' : 'close'" :class="value ? 'text-green' : 'text-black'" />
+          <q-icon
+            size="sm"
+            :name="value ? 'done' : 'close'"
+            :class="value ? 'text-green' : 'text-black'"
+          />
         </p>
       </div>
       <div class="col-6">
@@ -109,17 +113,47 @@ export default {
 
         this.tabs[key].whenItRing = data.whenItRing;
 
-        // this.intervalId = setInterval(() => {
-        //   this.notificationTest(1);
-        // }, 1000);
+        this.tabs[key].intervalId = setInterval(() => {
+          const closeNextRing = Object.entries(
+            this.tabs[key].whenItRing
+          ).filter(data => !data[1])[0][0];
+          if (new Date().getTime() >= parseInt(closeNextRing)) {
+            const whenItRing = this.tabs[key].whenItRing
+            whenItRing[closeNextRing] = true
+            this.$set(this.tabs, key, Object.assign({}, this.tabs[key], whenItRing ))
+            this.notificationTest("Its time to chill, bro!");
+          }
+        }, 1000);
       } else {
-        // clearInterval(this.intervalId);
-        // this.intervalId = null;
+        clearInterval(this.tabs[key].intervalId);
+        this.tabs[key].intervalId = null;
       }
     },
     renderTime(time) {
-      const date = new Date(+time)
-      return `${date.getHours().toString().padStart(2, 0)}:${date.getMinutes().toString().padStart(2, 0)}:${date.getSeconds().toString().padStart(2, 0)}`
+      const date = new Date(+time);
+      return `${date
+        .getHours()
+        .toString()
+        .padStart(2, 0)}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, 0)}`;
+    },
+    notificationTest(text) {
+      if (process.env.MODE === "electron") {
+        const notification = new this.$q.electron.remote.Notification({
+          title: "Application",
+          body: text
+        });
+
+        notification.show();
+
+        const audio = new Audio(
+          "https://ccrma.stanford.edu/~jos/mp3/gtr-wah.mp3"
+        );
+        audio.volume = 0.5;
+        audio.play();
+      }
     }
   }
 };

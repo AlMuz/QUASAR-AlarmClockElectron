@@ -48,20 +48,6 @@ export default {
       if (this.isElectron) {
         this.$q.electron.remote.BrowserWindow.getFocusedWindow().close();
       }
-    },
-    notificationTest(item) {
-      if (this.isElectron) {
-        const notification = new this.$q.electron.remote.Notification({
-          title: "Application",
-          body: item
-        });
-
-        notification.onclick = () => {
-          console.log("Notification clicked");
-        };
-
-        notification.show();
-      }
     }
   }
 };
