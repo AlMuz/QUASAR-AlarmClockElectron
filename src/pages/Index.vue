@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       tab: null,
-      tabs: []
+      tabs: this.$electronStore.get('tabs')
     };
   },
   computed: {
@@ -69,6 +69,15 @@ export default {
     },
     selectedTabKey() {
       return this.tab.slice(3);
+    }
+  },
+  watch: {
+    tabs: {
+      deep: true,
+      handler() {
+        console.log('changed');
+        this.$electronStore.set('tabs', this.tabs)
+      }
     }
   },
   methods: {
