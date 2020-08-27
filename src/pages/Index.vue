@@ -8,7 +8,7 @@
     <q-tabs v-model="tab" shrink stretch>
       <q-tab
         :name="`key${key}`"
-        :label="`Tab ${key}`"
+        :label="`${value.name || `Tab ${key}`}`"
         v-for="(value, key) in tabs"
         :key="key"
       />
@@ -25,7 +25,11 @@
           />
         </p>
       </div>
-      <div class="col-6">
+      <div class="col-6 q-gutter-sm">
+        <q-input
+          v-model="selectedTabData.name"
+          label="Tab name"
+        />
         <q-input
           v-model.number="selectedTabData.workStart"
           type="number"
@@ -41,7 +45,6 @@
           type="number"
           label="Interval in minutes"
         />
-        <div class="row">
           <q-btn
             color="white"
             text-color="black"
@@ -50,7 +53,6 @@
           />
         </div>
       </div>
-    </div>
   </q-page>
 </template>
 
@@ -60,7 +62,7 @@ export default {
   data() {
     return {
       tab: null,
-      tabs: this.$electronStore.get('tabs')
+      tabs: this.$electronStore.get('tabs') || []
     };
   },
   computed: {
@@ -83,6 +85,7 @@ export default {
   methods: {
     addNewTab() {
       this.tabs.push({
+        name: `Tab ${this.tabs.length + 1}`,
         status: false,
         workStart: null,
         workTime: 8,
