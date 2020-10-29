@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "description": "A Quasar Framework app",
   "productName": "Quasar App",
-  "author": "Aleksejs Muzicenko <a.muzicenko@eco-fin.eu>",
+  "author": "Aleksejs Muzicenko <almuz@inbox.lv>",
   "private": true,
   "scripts": {
+    "dev": "quasar dev -m electron",
     "lint": "eslint --ext .js,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },

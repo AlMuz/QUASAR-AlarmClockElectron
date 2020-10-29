@@ -45,14 +45,14 @@
           type="number"
           label="Interval in minutes"
         />
-          <q-btn
-            color="white"
-            text-color="black"
-            :label="!selectedTabData.status ? 'start' : 'stop'"
-            @click="startWork(selectedTabKey)"
-          />
-        </div>
+        <q-btn
+          color="white"
+          text-color="black"
+          :label="!selectedTabData.status ? 'start' : 'stop'"
+          @click="startWork(selectedTabKey)"
+        />
       </div>
+    </div>
   </q-page>
 </template>
 
@@ -126,9 +126,16 @@ export default {
         this.tabs[key].whenItRing = data.whenItRing;
 
         this.tabs[key].intervalId = setInterval(() => {
-          const closeNextRing = Object.entries(
+          const times = Object.entries(
             this.tabs[key].whenItRing
-          ).filter(data => !data[1])[0][0];
+          ).filter(data => !data[1])
+
+          // times ended on this date
+          if (!times[0]) {
+            return
+          }
+
+          const closeNextRing = times[0][0];
           if (new Date().getTime() >= parseInt(closeNextRing)) {
             const whenItRing = this.tabs[key].whenItRing
             whenItRing[closeNextRing] = true
